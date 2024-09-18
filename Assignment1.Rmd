@@ -2,7 +2,9 @@
 Title: STA3001 Homework 1
 Author: Zane Yee Sun
 ID: 12440004
-output: pdf_document
+output:
+  word_document: default
+  pdf_document: default
 ---
 ```{r setup, include = FALSE}
 ```
@@ -187,7 +189,7 @@ plot(mu_hat, e_i, xlab="Fitted values", ylab="Residuals", main="Residuals agains
 Q2.4
 (f)
 ```{r}
-# Calculate manually an estimate of the variance sigma square
+# estimate of the variance
 n = length(no_of_cars_sold_y)
 rss = sum(e_i^2)
 estimate_variance = rss / (n - 2)
@@ -206,7 +208,10 @@ q6data
 # Plot TEMP against AP, where BT is the temperature and AP is the air pressure
 plot(q6data$AP, q6data$BT, xlab="AP", ylab="TEMP", main="Scatterplot of TEMP against AP")
 ```
-- A Linear model seems appropriate as the relationship between TEMP and AP seems to be linear.
+
+```{r}
+```
+A Linear model seems appropriate as the relationship between TEMP and AP (as seen by the plots) seems to be linear.
 
 Q2.6
 (b)
@@ -216,6 +221,10 @@ x = 100 * log(q6data$AP, base = exp(1))
 # plot the scatterplot of TEMP against x
 plot(x, q6data$BT, xlab="100 * ln(AP)", ylab="TEMP", main="Scatterplot of TEMP against 100 * ln(AP)")
 ```
+```{r}
+```
+From the plot, it seems that a Linear model seems appropriate as the relationship between TEMP and 100*ln(AP) (as seen by the plots) seems to be linear as well.
+
 Q2.6
 (c)
 ```{r}
@@ -234,7 +243,40 @@ summary(q6model)
 
 ```
 ```{r}
+# estimate of the variance
+n = length(q6data$BT)
+
+# Calculate the fitted values mu_hat for each observed value of x
+mu_hat = b0 + b1 * q6data$AP
+
+# Calculate the residuals e_i for each observed value of x
+e_i = q6data$BT - mu_hat
+
+# Plot the residuals against the fitted values
+plot(mu_hat, e_i, xlab="Fitted values", ylab="Residuals", main="Residuals against Fitted values")
+```
+
+```{r}
+rss = sum(e_i^2)
+estimate_variance = rss / (n - 2)
+cat("The estimated variance:", estimate_variance, "\n")
+```
+
+```{r}
+# plot the least squares line
+plot(x, q6data$BT, xlab="100*ln(AP)", ylab="TEMP", main="Scatterplot of TEMP against 100*ln(AP)")
+abline(q6model, col="red")
+```
+
+
+```{r}
 # plot the least squares line
 plot(q6data$AP, q6data$BT, xlab="AP", ylab="TEMP", main="Scatterplot of TEMP against AP")
 abline(q6model, col="red")
 ```
+
+```{r}
+```
+We can see that from both scatterplots, the fitted line can only be seen on TEMP against AP, and not TEMP against 100*ln(AP). This is likely due to the fitted line being based on the original data, and not the transformed data. 
+
+Regardless, the fitted line seems to be a good fit for the data, as the residuals seem to be randomly scattered around 0, and there is no clear pattern in the residuals.
