@@ -53,22 +53,64 @@ qf(0.99, df1=4, df2=10)
 Q2.2
 (a)
 ```{r}
-# Set sample size
-n <- 1000000
+# 95th percentile of square of standard normal distribution
+qnorm(0.95, mean = 0, sd=1)^2
 
-# Generate standard normal random variables
-z <- rnorm(n)
+# 90th percentile of chi-squared distribution with 1 degree of freedom
+qchisq(0.90, df=1)
 
-# Square the standard normal values
-z_squared <- z^2
+# 97.5th percentile of square of standard normal distribution
+qnorm(0.975, mean = 0, sd=1)^2
 
-# Calculate 95th percentile of Z^2
-z_squared_95 <- quantile(z_squared, 0.95)
+# 95th percentile of chi-squared distribution with 1 degree of freedom
+qchisq(0.95, df=1)
 
-# Calculate 97.5th percentile of chi-squared distribution with 1 degree of freedom
-chi_squared_975 <- qchisq(0.975, df=1)
+# 98.75th percentile of square of standard normal distribution
+qnorm(0.9875, mean = 0, sd=1)^2
 
-# Compare the percentiles
-cat("95th percentile of Z^2:", z_squared_95, "\n")
-cat("97.5th percentile of Chisq:", chi_squared_975, "\n")
+# 97.5th percentile of chi-squared distribution with 1 degree of freedom
+qchisq(0.975, df=1)
+
+```
+We can see from the following results that:
+
+1. the 90th percentile of the chi-squared distribution is equal to the 95th percentile of the square of the standard normal distribution.
+
+2. the 95th percentile of the chi-squared distribution is equal to the 97.5th percentile of the square of the standard normal distribution.
+
+3. the 97.5th percentile of the chi-squared distribution is equal to the 98.75th percentile of the square of the standard normal distribution.
+
+(b)
+```{r}
+v1 <- 1
+v2 <- 20
+
+# 95th percentile of square of t distribution
+qt(0.95, df=v2)^2
+
+# 90th percentile of f distribution (1, v2)
+qf(0.90, df1=v1, df2=v2)
+
+# 97.5th percentile of square of t distribution
+qt(0.975, df=v2)^2
+
+# 95th percentile of f distribution (1, v2)
+qf(0.95, df1=v1, df2=v2)
+
+# 98.75th percentile of square of t distribution
+qt(0.9875, df=v2)^2
+
+# 97.5th percentile of f distribution (1, v2)
+qf(0.975, df1=v1, df2=v2)
+```
+We can see from the following results that:
+
+1. the 90th percentile of the F distribution (1, v2) is equal to the 95th percentile of the square of the t distribution (v2).
+
+2. the 95th percentile of the F distribution (1, v2) is equal to the 97.5th percentile of the square of the t distribution (v2).
+
+3. the 97.5th percentile of the F distribution (1, v2) is equal to the 98.75th percentile of the square of the t distribution (v2).
+```{r}
+qnorm(0.95, mean = 0, sd=1)^2
+qnorm(0.975, mean = 0, sd=1)
 ```
