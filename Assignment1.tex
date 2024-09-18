@@ -1,0 +1,750 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+Q2.1 (a)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile}
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{mean=}\DecValTok{10}\NormalTok{, }\AttributeTok{sd=}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 14.93456
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile}
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{mean=}\DecValTok{10}\NormalTok{, }\AttributeTok{sd=}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 16.97904
+\end{verbatim}
+
+Q2.1 (b)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the t{-}distribution with 10 degrees of freedom}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.812461
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the t{-}distribution with 10 degrees of freedom}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.763769
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the t{-}distribution with 25 degrees of freedom}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\DecValTok{25}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.708141
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the t{-}distribution with 25 degrees of freedom}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df=}\DecValTok{25}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.485107
+\end{verbatim}
+
+Q2.1 (c)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the chi{-}squared distribution with 1 degrees of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.841459
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the chi{-}squared distribution with 1 degrees of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 6.634897
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the chi{-}squared distribution with 4 degrees of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 9.487729
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the chi{-}squared distribution with 4 degrees of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 13.2767
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the chi{-}squared distribution with 10 degrees of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 18.30704
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the chi{-}squared distribution with 10 degrees of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 23.20925
+\end{verbatim}
+
+Q2.1 (d)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the F{-}distribution with 2 and 10 degrees of freedom}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df1=}\DecValTok{2}\NormalTok{, }\AttributeTok{df2=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4.102821
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the F{-}distribution with 2 and 10 degrees of freedom}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df1=}\DecValTok{2}\NormalTok{, }\AttributeTok{df2=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7.559432
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of the F{-}distribution with 4 and 10 degrees of freedom}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df1=}\DecValTok{4}\NormalTok{, }\AttributeTok{df2=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.47805
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 99th percentile of the F{-}distribution with 4 and 10 degrees of freedom}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.99}\NormalTok{, }\AttributeTok{df1=}\DecValTok{4}\NormalTok{, }\AttributeTok{df2=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.994339
+\end{verbatim}
+
+Q2.2 (a)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of square of standard normal distribution}
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd=}\DecValTok{1}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.705543
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 90th percentile of chi{-}squared distribution with 1 degree of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.90}\NormalTok{, }\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.705543
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 97.5th percentile of square of standard normal distribution}
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd=}\DecValTok{1}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.841459
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of chi{-}squared distribution with 1 degree of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.841459
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 98.75th percentile of square of standard normal distribution}
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.9875}\NormalTok{, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd=}\DecValTok{1}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.023886
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 97.5th percentile of chi{-}squared distribution with 1 degree of freedom}
+\FunctionTok{qchisq}\NormalTok{(}\FloatTok{0.975}\NormalTok{, }\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.023886
+\end{verbatim}
+
+We can see from the following results that:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  the 90th percentile of the chi-squared distribution is equal to the
+  95th percentile of the square of the standard normal distribution.
+\item
+  the 95th percentile of the chi-squared distribution is equal to the
+  97.5th percentile of the square of the standard normal distribution.
+\item
+  the 97.5th percentile of the chi-squared distribution is equal to the
+  98.75th percentile of the square of the standard normal distribution.
+\end{enumerate}
+
+Q2.2 (b)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{v1 }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{v2 }\OtherTok{\textless{}{-}} \DecValTok{20}
+
+\CommentTok{\# 95th percentile of square of t distribution}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df=}\NormalTok{v2)}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.974653
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 90th percentile of f distribution (1, v2)}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.90}\NormalTok{, }\AttributeTok{df1=}\NormalTok{v1, }\AttributeTok{df2=}\NormalTok{v2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.974653
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 97.5th percentile of square of t distribution}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.975}\NormalTok{, }\AttributeTok{df=}\NormalTok{v2)}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4.351244
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 95th percentile of f distribution (1, v2)}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.95}\NormalTok{, }\AttributeTok{df1=}\NormalTok{v1, }\AttributeTok{df2=}\NormalTok{v2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4.351244
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 98.75th percentile of square of t distribution}
+\FunctionTok{qt}\NormalTok{(}\FloatTok{0.9875}\NormalTok{, }\AttributeTok{df=}\NormalTok{v2)}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.871494
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 97.5th percentile of f distribution (1, v2)}
+\FunctionTok{qf}\NormalTok{(}\FloatTok{0.975}\NormalTok{, }\AttributeTok{df1=}\NormalTok{v1, }\AttributeTok{df2=}\NormalTok{v2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.871494
+\end{verbatim}
+
+We can see from the following results that:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  the 90th percentile of the F distribution (1, v2) is equal to the 95th
+  percentile of the square of the t distribution (v2).
+\item
+  the 95th percentile of the F distribution (1, v2) is equal to the
+  97.5th percentile of the square of the t distribution (v2).
+\item
+  the 97.5th percentile of the F distribution (1, v2) is equal to the
+  98.75th percentile of the square of the t distribution (v2).
+\end{enumerate}
+
+Q2.4 (a)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{weekof }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"January 30"}\NormalTok{, }\StringTok{"June 39"}\NormalTok{, }\StringTok{"March 2"}\NormalTok{, }\StringTok{"October 26"}\NormalTok{, }\StringTok{"February 7"}\NormalTok{)}
+\NormalTok{no\_of\_cars\_sold\_y }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{18}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{11}\NormalTok{)}
+\NormalTok{ave\_no\_of\_salesppl\_x }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{6}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{)}
+
+\CommentTok{\# create matrix with the data}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(weekof, no\_of\_cars\_sold\_y, ave\_no\_of\_salesppl\_x)}
+
+\CommentTok{\# create data frame}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(data)}
+\FunctionTok{transform}\NormalTok{(df, }\AttributeTok{no\_of\_cars\_sold\_y =} \FunctionTok{as.numeric}\NormalTok{(no\_of\_cars\_sold\_y), }\AttributeTok{ave\_no\_of\_salesppl\_x =} \FunctionTok{as.numeric}\NormalTok{(ave\_no\_of\_salesppl\_x))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       weekof no_of_cars_sold_y ave_no_of_salesppl_x
+## 1 January 30                20                    6
+## 2    June 39                18                    6
+## 3    March 2                10                    4
+## 4 October 26                 6                    2
+## 5 February 7                11                    3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# construct scatterplot of y against x, where y is the number of cars sold and x is the average number of salespeople}
+\FunctionTok{plot}\NormalTok{(ave\_no\_of\_salesppl\_x, no\_of\_cars\_sold\_y, }\AttributeTok{xlab=}\StringTok{"Ave \# of salespeople"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"\# of cars sold"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Scatterplot of \# of cars sold against ave \# of salespeople"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-9-1.pdf}
+Q2.4 (b)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# estimate intercept using Method of least squares}
+\NormalTok{xbar }\OtherTok{=} \FunctionTok{mean}\NormalTok{(ave\_no\_of\_salesppl\_x)}
+\NormalTok{ybar }\OtherTok{=} \FunctionTok{mean}\NormalTok{(no\_of\_cars\_sold\_y)}
+\NormalTok{b1 }\OtherTok{=} \FunctionTok{sum}\NormalTok{((ave\_no\_of\_salesppl\_x }\SpecialCharTok{{-}}\NormalTok{ xbar) }\SpecialCharTok{*}\NormalTok{ (no\_of\_cars\_sold\_y }\SpecialCharTok{{-}}\NormalTok{ ybar)) }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{((ave\_no\_of\_salesppl\_x }\SpecialCharTok{{-}}\NormalTok{ xbar)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{b0 }\OtherTok{=}\NormalTok{ ybar }\SpecialCharTok{{-}}\NormalTok{ b1 }\SpecialCharTok{*}\NormalTok{ xbar}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The estimated intercept:"}\NormalTok{, b0, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The estimated intercept: -0.125
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The estimated slope of the least squares line:"}\NormalTok{, b1, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The estimated slope of the least squares line: 3.125
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# check using built in function \textquotesingle{}lm\textquotesingle{}}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(no\_of\_cars\_sold\_y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ave\_no\_of\_salesppl\_x)}
+
+\CommentTok{\# print the summary of the model}
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = no_of_cars_sold_y ~ ave_no_of_salesppl_x)
+## 
+## Residuals:
+##      1      2      3      4      5 
+##  1.375 -0.625 -2.375 -0.125  1.750 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)  
+## (Intercept)           -0.1250     2.4055  -0.052    0.962  
+## ave_no_of_salesppl_x   3.1250     0.5352   5.839    0.010 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.915 on 3 degrees of freedom
+## Multiple R-squared:  0.9191, Adjusted R-squared:  0.8922 
+## F-statistic: 34.09 on 1 and 3 DF,  p-value: 0.01001
+\end{verbatim}
+
+Q2.4 (c)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# plot the least squares line}
+\FunctionTok{plot}\NormalTok{(ave\_no\_of\_salesppl\_x, no\_of\_cars\_sold\_y, }\AttributeTok{xlab=}\StringTok{"Ave \# of salespeople"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"\# of cars sold"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Scatterplot of \# of cars sold against ave \# of salespeople"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(model, }\AttributeTok{col=}\StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-11-1.pdf}
+Q2.4 (d)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# estimate the number of cars sold when the average number of salespeople is 5}
+\NormalTok{x }\OtherTok{=} \DecValTok{5}
+\NormalTok{y }\OtherTok{=}\NormalTok{ b0 }\SpecialCharTok{+}\NormalTok{ b1 }\SpecialCharTok{*}\NormalTok{ x}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The estimated number of cars sold when the average number of salespeople is 5:"}\NormalTok{, y, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The estimated number of cars sold when the average number of salespeople is 5: 15.5
+\end{verbatim}
+
+Q2.4 (e)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate the fitted values mu\_hat for each observed value of x}
+\NormalTok{mu\_hat }\OtherTok{=}\NormalTok{ b0 }\SpecialCharTok{+}\NormalTok{ b1 }\SpecialCharTok{*}\NormalTok{ ave\_no\_of\_salesppl\_x}
+
+\CommentTok{\# Calculate the residuals e\_i for each observed value of x}
+\NormalTok{e\_i }\OtherTok{=}\NormalTok{ no\_of\_cars\_sold\_y }\SpecialCharTok{{-}}\NormalTok{ mu\_hat}
+
+\CommentTok{\# Plot the residuals against the fitted values}
+\FunctionTok{plot}\NormalTok{(mu\_hat, e\_i, }\AttributeTok{xlab=}\StringTok{"Fitted values"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"Residuals"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Residuals against Fitted values"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-13-1.pdf}
+Q2.4 (f)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate manually an estimate of the variance sigma square}
+\NormalTok{n }\OtherTok{=} \FunctionTok{length}\NormalTok{(no\_of\_cars\_sold\_y)}
+\NormalTok{rss }\OtherTok{=} \FunctionTok{sum}\NormalTok{(e\_i}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{estimate\_variance }\OtherTok{=}\NormalTok{ rss }\SpecialCharTok{/}\NormalTok{ (n }\SpecialCharTok{{-}} \DecValTok{2}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The estimated variance:"}\NormalTok{, estimate\_variance, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The estimated variance: 3.666667
+\end{verbatim}
+
+Q2.6 (a)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# import data}
+\NormalTok{q6data }\OtherTok{=} \FunctionTok{read.table}\NormalTok{(}\AttributeTok{file=}\StringTok{\textquotesingle{}hooker.txt\textquotesingle{}}\NormalTok{, }\AttributeTok{header =}\NormalTok{ T)}
+\NormalTok{q6data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       BT     AP
+## 1  210.8 29.211
+## 2  210.2 28.559
+## 3  208.4 27.972
+## 4  202.5 24.697
+## 5  200.6 23.726
+## 6  200.1 23.369
+## 7  199.5 23.030
+## 8  197.0 21.892
+## 9  196.4 21.928
+## 10 196.3 21.654
+## 11 195.6 21.605
+## 12 193.4 20.480
+## 13 193.6 20.212
+## 14 191.4 19.758
+## 15 191.1 19.490
+## 16 190.6 19.386
+## 17 189.5 18.869
+## 18 188.8 18.356
+## 19 188.5 18.507
+## 20 185.7 17.267
+## 21 186.0 17.221
+## 22 185.6 17.062
+## 23 184.1 16.959
+## 24 184.6 16.881
+## 25 184.1 16.817
+## 26 183.2 16.385
+## 27 182.4 16.235
+## 28 181.9 16.106
+## 29 181.9 15.928
+## 30 181.0 15.919
+## 31 180.6 15.376
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plot TEMP against AP, where BT is the temperature and AP is the air pressure}
+\FunctionTok{plot}\NormalTok{(q6data}\SpecialCharTok{$}\NormalTok{AP, q6data}\SpecialCharTok{$}\NormalTok{BT, }\AttributeTok{xlab=}\StringTok{"AP"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"TEMP"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Scatterplot of TEMP against AP"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-17-1.pdf}
+- A Linear model seems appropriate as the relationship between TEMP and
+AP seems to be linear.
+
+Q2.6 (b)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\OtherTok{=} \DecValTok{100} \SpecialCharTok{*} \FunctionTok{log}\NormalTok{(q6data}\SpecialCharTok{$}\NormalTok{AP, }\AttributeTok{base =} \FunctionTok{exp}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# plot the scatterplot of TEMP against x}
+\FunctionTok{plot}\NormalTok{(x, q6data}\SpecialCharTok{$}\NormalTok{BT, }\AttributeTok{xlab=}\StringTok{"100 * ln(AP)"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"TEMP"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Scatterplot of TEMP against 100 * ln(AP)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-18-1.pdf}
+Q2.6 (c)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xbar }\OtherTok{=} \FunctionTok{mean}\NormalTok{(q6data}\SpecialCharTok{$}\NormalTok{AP)}
+\NormalTok{ybar }\OtherTok{=} \FunctionTok{mean}\NormalTok{(q6data}\SpecialCharTok{$}\NormalTok{BT)}
+\NormalTok{b1 }\OtherTok{=} \FunctionTok{sum}\NormalTok{((q6data}\SpecialCharTok{$}\NormalTok{AP }\SpecialCharTok{{-}}\NormalTok{ xbar) }\SpecialCharTok{*}\NormalTok{ (q6data}\SpecialCharTok{$}\NormalTok{BT }\SpecialCharTok{{-}}\NormalTok{ ybar)) }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{((q6data}\SpecialCharTok{$}\NormalTok{AP }\SpecialCharTok{{-}}\NormalTok{ xbar)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{b0 }\OtherTok{=}\NormalTok{ ybar }\SpecialCharTok{{-}}\NormalTok{ b1 }\SpecialCharTok{*}\NormalTok{ xbar}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The estimated intercept:"}\NormalTok{, b0, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The estimated intercept: 146.6729
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The estimated slope:"}\NormalTok{, b1, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The estimated slope: 2.252596
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# check using built in function \textquotesingle{}lm\textquotesingle{}}
+\NormalTok{q6model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(q6data}\SpecialCharTok{$}\NormalTok{BT }\SpecialCharTok{\textasciitilde{}}\NormalTok{ q6data}\SpecialCharTok{$}\NormalTok{AP)}
+
+\CommentTok{\# print the summary of the model}
+\FunctionTok{summary}\NormalTok{(q6model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = q6data$BT ~ q6data$AP)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.6735 -0.6805  0.2203  0.5296  1.3976 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 146.67290    0.77641  188.91   <2e-16 ***
+## q6data$AP     2.25260    0.03809   59.14   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.806 on 29 degrees of freedom
+## Multiple R-squared:  0.9918, Adjusted R-squared:  0.9915 
+## F-statistic:  3498 on 1 and 29 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# plot the least squares line}
+\FunctionTok{plot}\NormalTok{(q6data}\SpecialCharTok{$}\NormalTok{AP, q6data}\SpecialCharTok{$}\NormalTok{BT, }\AttributeTok{xlab=}\StringTok{"AP"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"TEMP"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Scatterplot of TEMP against AP"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(q6model, }\AttributeTok{col=}\StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Assignment1_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\end{document}
