@@ -1,0 +1,8 @@
+```
+# determine the 95 and 99th percentiles of the normal distributino with mu 10 and sigma 3
+# 95th percentile
+qnorm(0.95, mean=10, sd=3)
+# 99th percentile
+qnorm(0.99, mean=10, sd=3)
+```
+
