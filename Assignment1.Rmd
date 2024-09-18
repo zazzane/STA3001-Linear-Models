@@ -1,8 +1,74 @@
-```
-# determine the 95 and 99th percentiles of the normal distributino with mu 10 and sigma 3
+Assignment 
+Homework 1 Exercises
+---
+Q2.1
+(a)
+```{r}
 # 95th percentile
 qnorm(0.95, mean=10, sd=3)
 # 99th percentile
 qnorm(0.99, mean=10, sd=3)
 ```
+(b)
+```{r}
+# 95th percentile of the t-distribution with 10 degrees of freedom
+qt(0.95, df=10)
+# 99th percentile of the t-distribution with 10 degrees of freedom
+qt(0.99, df=10)
+# 95th percentile of the t-distribution with 25 degrees of freedom
+qt(0.95, df=25)
+# 99th percentile of the t-distribution with 25 degrees of freedom
+qt(0.99, df=25)
+```
+(c)
+```{r}
+# 95th percentile of the chi-squared distribution with 1 degrees of freedom
+qchisq(0.95, df=1)
+# 99th percentile of the chi-squared distribution with 1 degrees of freedom
+qchisq(0.99, df=1)
 
+# 95th percentile of the chi-squared distribution with 4 degrees of freedom
+qchisq(0.95, df=4)
+# 99th percentile of the chi-squared distribution with 4 degrees of freedom
+qchisq(0.99, df=4)
+
+# 95th percentile of the chi-squared distribution with 10 degrees of freedom
+qchisq(0.95, df=10)
+# 99th percentile of the chi-squared distribution with 10 degrees of freedom
+qchisq(0.99, df=10)
+```
+(d)
+```{r}
+# 95th percentile of the F-distribution with 2 and 10 degrees of freedom
+qf(0.95, df1=2, df2=10)
+# 99th percentile of the F-distribution with 2 and 10 degrees of freedom
+qf(0.99, df1=2, df2=10)
+
+# 95th percentile of the F-distribution with 4 and 10 degrees of freedom
+qf(0.95, df1=4, df2=10)
+# 99th percentile of the F-distribution with 4 and 10 degrees of freedom
+qf(0.99, df1=4, df2=10)
+```
+---
+Q2.2
+(a)
+```{r}
+# Set sample size
+n <- 1000000
+
+# Generate standard normal random variables
+z <- rnorm(n)
+
+# Square the standard normal values
+z_squared <- z^2
+
+# Calculate 95th percentile of Z^2
+z_squared_95 <- quantile(z_squared, 0.95)
+
+# Calculate 97.5th percentile of chi-squared distribution with 1 degree of freedom
+chi_squared_975 <- qchisq(0.975, df=1)
+
+# Compare the percentiles
+cat("95th percentile of Z^2:", z_squared_95, "\n")
+cat("97.5th percentile of Chisq:", chi_squared_975, "\n")
+```
