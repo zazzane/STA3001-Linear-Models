@@ -1,0 +1,90 @@
+---
+Title: Assignment 2
+Author: Zane Yee Sun 
+ID: 124400004
+---
+# Assignment 2 - Linear Models
+### Q2.6 
+```{r}
+# set your path
+data<-read.table(file = "hooker.txt",header = TRUE)
+head(data)
+```
+```{r}
+# Initialize variables from HW1 data
+TEMP<-data$BT
+AP<-data$AP
+
+x<-100*log(AP)
+
+x_mean<-mean(x)
+y_mean<-mean(TEMP)
+
+Sxx<-sum((x-x_mean)^2)
+Sxy<-sum((x-x_mean)*TEMP)
+
+beta_1<-Sxy/Sxx
+beta_0<- y_mean-beta_1*x_mean
+```
+#### (d)(i)
+```{r}
+# 95% confidence interval for beta_1
+n<-length(x)
+alpha<-0.05
+t<-qt(1-alpha/2,df=n-2)
+SE<-sqrt(sum((TEMP-beta_0-beta_1*x)^2)/(n-2))/sqrt(Sxx)
+CI<-c(beta_1-t*SE,beta_1+t*SE)
+cat("95% confidence interval for beta_1 is: ",CI)
+```
+#### (d)(ii)
+```{r}
+# Ave temperature when AP = 25
+x_25<-100*log(25)
+y_25<-beta_0+beta_1*x_25
+cat("Average temperature when AP = 25 is: ",y_25)
+```
+### Q2.8
+```{r}
+# Initialize data from question
+company <- c("General Motors", "Ford/Volvo", "Renault/Nissan", "Volkswagen", "DaimlerChrysler", "Toyota", "Fiat", "Honda", "PSA", "BMW")
+cars_sold <- c(8149, 7316, 4778, 4580, 4506, 4454, 2535, 2291, 2278, 1187)
+revenue <- c(1996, 2118, 1174, 943, 1813, 1175, 628, 605, 465, 447)
+
+# Create data frame
+df <- data.frame(company, cars_sold, revenue)
+
+# Fit linear model y = revenue, x = cars sold (sales)
+fit <- lm(revenue ~ cars_sold, data = df)
+
+# Print summary
+summary(fit)
+```
+#### (a)
+Hypothesis testing for the importance of cars sold in predicting revenue.
+- Null hypothesis: The slope of the linear model is 0.
+- Alternative hypothesis: The slope of the linear model is not 0.
+
+Since the p-value = 0.000156 < 0.05, we reject the null hypothesis that the slope is 0. There is a significant linear relationship between revenue and cars sold.
+---
+#### (b)
+```{r}
+# Manually calculate the 95% confidence interval for the regression coefficient of the number of cars sold
+n <- length(cars_sold)
+alpha <- 0.05
+t <- qt(1-alpha/2, df = n-2)
+beta_0 <- coef(fit)[1]
+beta_1 <- coef(fit)[2]
+x_mean <- mean(cars_sold)
+y_mean <- mean(revenue)
+Sxx <- sum((cars_sold - x_mean)^2)
+SE <- sqrt(sum((revenue - beta_0 - beta_1 * cars_sold)^2) / (n-2)) / sqrt(Sxx)
+CI <- c(beta_1 - t * SE, beta_1 + t * SE)
+cat("95% confidence interval for beta_1 is: ", CI)
+```
+```{r}
+# Obtain the 95% confidence interval for the regression coefficient of the number of cars sold using confint()
+confint(fit, level = 0.95)
+```
+
+
+
