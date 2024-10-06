@@ -104,6 +104,59 @@ confint(fit, level = 0.90)
 R2 <- summary(fit)$r.squared
 cat("The coefficient of determination is: ", R2)
 ```
+#### (e)
+```{r}
+# Calculate SD of revenue after factoring the sales of cars
+y_hat <- beta_0 + beta_1 * cars_sold
+SSE_withx <- sum((revenue - y_hat)^2)
+
+# Calculate SD of revenue without factoring the sales of cars
+y_mean <- mean(revenue)
+SSE_withoutx <- sum((revenue - y_mean)^2)
+
+# Output and compare the two SSEs
+cat("SSE with x: ", SSE_withx, "\n")
+cat("SSE without factoring x: ", SSE_withoutx, "\n")
+```
+#### (f)
+```{r}
+# Calculate estimates for BMW
+cars_sold_BMW <- 1187
+revenue_BMW <- beta_0 + beta_1 * cars_sold_BMW
+cat("The estimated revenue for BMW is: ", revenue_BMW)
+```
+### Q2.14
+
+#### (a)
+Let 'x' denote s the quantities of calcium in carefully prepared solutions.
+Let 'y' denote the corresponding analytical results.
+```{r}
+# Initialize x and y variables
+x <- c(4, 8, 12.5, 16, 20, 25, 31, 36, 40, 40)
+y <- c(3.7, 7.8, 12.1, 15.6, 19.8, 24.5, 31.1, 35.5, 39.4, 39.5)
+
+# Manually fit the linear model of y and x
+x_mean <- mean(x)
+y_mean <- mean(y)
+Sxx <- sum((x - x_mean)^2)
+Sxy <- sum((x - x_mean) * y)
+beta_1 <- Sxy / Sxx
+beta_0 <- y_mean - beta_1 * x_mean
+
+# Print the coefficients
+cat("The estimated coefficients are: beta_0 = ", beta_0, ", beta_1 = ", beta_1, "\n")
+```
+```{r}
+# Fit a linear model using lm()
+fit <- lm(y ~ x)
+
+summary(fit)
+```
+The assumptions made:
+1. The data is normally distributed.
+2. Each instance of x_i is independent of other instances, and the same goes for y_i.
+---
+#### (b)
 
 
 
