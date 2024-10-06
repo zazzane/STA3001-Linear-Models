@@ -38,11 +38,22 @@ cat("95% confidence interval for beta_1 is: ",CI)
 ```
 #### (d)(ii)
 ```{r}
-# Ave temperature when AP = 25
+# Calculate 95% confidence interval for the average temperature when AP = 25
 x_25<-100*log(25)
 y_25<-beta_0+beta_1*x_25
-cat("Average temperature when AP = 25 is: ",y_25)
+
+SE<-sqrt(sum((TEMP-beta_0-beta_1*x)^2)/(n-2))*sqrt(1/n+(x_25-x_mean)^2/Sxx)
+CI<-c(y_25-t*SE,y_25+t*SE)
+cat("95% confidence interval for the average temperature when AP = 25 is: ",CI)
+
 ```
+```{r}
+# Check the 95% confidence interval for the average temperature when AP = 25 using predict()
+fit<-lm(TEMP~x)
+predict(fit,newdata=data.frame(x=100*log(25)),interval="confidence",level=0.95)
+```
+
+
 ### Q2.8
 ```{r}
 # Initialize data from question
@@ -106,17 +117,15 @@ cat("The coefficient of determination is: ", R2)
 ```
 #### (e)
 ```{r}
-# Calculate SD of revenue after factoring the sales of cars
+# Calculate standard deviation after factoring sales of cars
 y_hat <- beta_0 + beta_1 * cars_sold
-SSE_withx <- sum((revenue - y_hat)^2)
+sigma_no_x <- sqrt(sum((revenue - y_hat)^2) / (n-2))
+cat("The standard deviation is when factoring sales of cars: ", sigma_no_x, "\n")
 
-# Calculate SD of revenue without factoring the sales of cars
-y_mean <- mean(revenue)
-SSE_withoutx <- sum((revenue - y_mean)^2)
-
-# Output and compare the two SSEs
-cat("SSE with x: ", SSE_withx, "\n")
-cat("SSE without factoring x: ", SSE_withoutx, "\n")
+# Calculate standard deviation without factoring sales of cars
+y_hat <- mean(revenue)
+sigma_x <- sqrt(sum((revenue - y_hat)^2) / (n-1))
+cat("The standard deviation is without factoring sales of cars: ", sigma_x, "\n")
 ```
 #### (f)
 ```{r}
@@ -157,6 +166,60 @@ The assumptions made:
 2. Each instance of x_i is independent of other instances, and the same goes for y_i.
 ---
 #### (b)
+```{r}
+# 95% confidence interval for beta_0 (intercept)
+n <- length(x)
+alpha <- 0.05
+t <- qt(1-alpha/2, df = n-2)
+SE <- sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) * sqrt(1/n + x_mean^2 / Sxx)
+CI <- c(beta_0 - t * SE, beta_0 + t * SE)
+cat("95% confidence interval for beta_0 is: ", CI)
+```
+#### (c)
+```{r}
+# 95% confidence interval for beta_1 (slope)
+SE <- sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) / sqrt(Sxx)
+CI <- c(beta_1 - t * SE, beta_1 + t * SE)
+cat("95% confidence interval for beta_1 is: ", CI)
+```
+#### (d)
+In this context, there are two expectations:
+i. When x = 0, y = 0. I.e. if there is no calcium in the solution, the analytical result should be 0.
+ii. The slope of the linear model should be 1, based on the empirical techniques.
+
+Now we test if there is enough evidence for each claim (i) and (ii).
+(i)
+```{r}
+# Hypothesis testing for beta_0 = 0
+# Null hypothesis: beta_0 = 0
+# Alternative hypothesis: beta_0 != 0 (two tail test)
+
+t_stat <- beta_0 / (sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) * sqrt(1/n + x_mean^2 / Sxx))
+p_value <- 2 * pt(-abs(t_stat), df = n-2)
+cat("The p-value for testing beta_0 = 0 is: ", p_value, "\n")
+```
+Since the p-value = 0.1368 > 0.05, we do not reject the null hypothesis that beta_0 = 0. There is not enough evidence to suggest that the analytical result is 0 when there is no calcium in the solution.
+
+(ii)
+```{r}
+# Hypothesis testing for beta_1 = 1
+# Null hypothesis: beta_1 = 1
+# Alternative hypothesis: beta_1 != 1 (two tail test)
+
+t_stat <- (beta_1 - 1) / (sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) / sqrt(Sxx))
+p_value <- 2 * pt(-abs(t_stat), df = n-2)
+cat("The p-value for testing beta_1 = 1 is: ", p_value, "\n")
+```
+Since the p-value = 0.34451 > 0.05, we do not reject the null hypothesis that beta_1 = 1. There is not enough evidence to suggest that the slope of the linear model is 1.
+
+#### (e)
+Assume that the condition in (d)(i) is true, i.e. beta_0 = 0. Then the linear model simplifies to y = beta_1 * x + e, where 'e' denotes error. We can now recalculate the confidence interval for beta_1.
+```{r}
+# Recalculate the 95% confidence interval for beta_1
+SE <- sqrt(sum((y - beta_1 * x)^2) / (n-1)) / sqrt(Sxx)
+CI <- c(beta_1 - t * SE, beta_1 + t * SE)
+cat("95% confidence interval for beta_1 when beta_0 = 0 is: ", CI)
+```
 
 
 
