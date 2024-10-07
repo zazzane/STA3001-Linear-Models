@@ -1,7 +1,8 @@
 ---
 Title: Assignment 2
-Author: Zane Yee Sun 
+Author: Zane Yee Sun
 ID: 124400004
+output: word_document
 ---
 # Assignment 2 - Linear Models
 ### Q2.6 
@@ -75,7 +76,7 @@ Hypothesis testing for the importance of cars sold in predicting revenue.
 - Null hypothesis: The slope of the linear model is 0.
 - Alternative hypothesis: The slope of the linear model is not 0.
 
-Since the p-value = 0.000156 < 0.05, we reject the null hypothesis that the slope is 0. There is a significant linear relationship between revenue and cars sold.
+Since the p-value = `0.000156` < `0.05`, we reject the null hypothesis that the slope is 0. There is a significant linear relationship between revenue and cars sold.
 ---
 #### (b)
 ```{r}
@@ -111,7 +112,17 @@ confint(fit, level = 0.90)
 ```
 #### (d)
 ```{r}
-# get the coefficent of determination
+# Calculate the coefficient of determination by taking model sum of squares divided by the total sum of squares
+SST <- sum((revenue - y_mean)^2)
+SSReg <- beta_1^2 * Sxx
+
+# Coefficient of Determination
+R2 <- SSReg / SST
+cat("The coefficient of determination is: ", R2)
+```
+
+```{r}
+# get the coefficent of determination using summary()
 R2 <- summary(fit)$r.squared
 cat("The coefficient of determination is: ", R2)
 ```
@@ -144,13 +155,22 @@ Let 'y' denote the corresponding analytical results.
 x <- c(4, 8, 12.5, 16, 20, 25, 31, 36, 40, 40)
 y <- c(3.7, 7.8, 12.1, 15.6, 19.8, 24.5, 31.1, 35.5, 39.4, 39.5)
 
-# Manually fit the linear model of y and x
+# Fit the linear model of y and x
 x_mean <- mean(x)
 y_mean <- mean(y)
 Sxx <- sum((x - x_mean)^2)
 Sxy <- sum((x - x_mean) * y)
 beta_1 <- Sxy / Sxx
 beta_0 <- y_mean - beta_1 * x_mean
+
+# Calculate the number of observations and the t-value
+n <- length(x)
+alpha <- 0.05
+t <- qt(1-alpha/2, df = n-2)
+
+# Residuals and residual sum of squares
+residuals <- y - (beta_0 + beta_1 * x)
+RSS <- sum(residuals^2) 
 
 # Print the coefficients
 cat("The estimated coefficients are: beta_0 = ", beta_0, ", beta_1 = ", beta_1, "\n")
@@ -163,28 +183,37 @@ summary(fit)
 ```
 The assumptions made:
 1. The data is normally distributed.
-2. Each instance of x_i is independent of other instances, and the same goes for y_i.
+2. Each instance of `x_i` is independent of other instances, and the same goes for `y_i`.
 ---
 #### (b)
 ```{r}
-# 95% confidence interval for beta_0 (intercept)
-n <- length(x)
-alpha <- 0.05
-t <- qt(1-alpha/2, df = n-2)
-SE <- sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) * sqrt(1/n + x_mean^2 / Sxx)
-CI <- c(beta_0 - t * SE, beta_0 + t * SE)
-cat("95% confidence interval for beta_0 is: ", CI)
+# Calculate standard error for beta_0
+se_b0 <- sqrt(RSS / (n-2)) * sqrt(1/n + x_mean^2 / Sxx)
+
+# Calculate 95% confidence interval for beta_0 (intercept)
+CI_b0 <- c(beta_0 - t * se_b0, beta_0 + t * se_b0)
+cat("95% confidence interval for beta_0 is: ", CI_b0, "\n")
+```
+```{r}
+# Check CI_b0 using confint()
+confint(fit, level = 0.95)[1,]
 ```
 #### (c)
 ```{r}
+# Calculate standard error for beta_1
+se_b1 <- sqrt(RSS / (n-2)) / sqrt(Sxx)
+
 # 95% confidence interval for beta_1 (slope)
-SE <- sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) / sqrt(Sxx)
-CI <- c(beta_1 - t * SE, beta_1 + t * SE)
-cat("95% confidence interval for beta_1 is: ", CI)
+CI_b1 <- c(beta_1 - t * se_b1, beta_1 + t * se_b1)
+cat("95% confidence interval for beta_1 is: ", CI_b1)
+```
+```{r}
+# Check CI_b1 using confint()
+confint(fit, level = 0.95)[2,]
 ```
 #### (d)
 In this context, there are two expectations:
-i. When x = 0, y = 0. I.e. if there is no calcium in the solution, the analytical result should be 0.
+i. When `x = 0`, `y = 0`. I.e. if there is no calcium in the solution, the analytical result should be 0.
 ii. The slope of the linear model should be 1, based on the empirical techniques.
 
 Now we test if there is enough evidence for each claim (i) and (ii).
@@ -198,7 +227,7 @@ t_stat <- beta_0 / (sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) * sqrt(1/n + 
 p_value <- 2 * pt(-abs(t_stat), df = n-2)
 cat("The p-value for testing beta_0 = 0 is: ", p_value, "\n")
 ```
-Since the p-value = 0.1368 > 0.05, we do not reject the null hypothesis that beta_0 = 0. There is not enough evidence to suggest that the analytical result is 0 when there is no calcium in the solution.
+Since the p-value = `0.1368` > `0.05`, we do not reject the null hypothesis that `beta_0 = 0`. There is not enough evidence to suggest that the analytical result is non-0 when there is no calcium in the solution.
 
 (ii)
 ```{r}
@@ -210,16 +239,107 @@ t_stat <- (beta_1 - 1) / (sqrt(sum((y - beta_0 - beta_1 * x)^2) / (n-2)) / sqrt(
 p_value <- 2 * pt(-abs(t_stat), df = n-2)
 cat("The p-value for testing beta_1 = 1 is: ", p_value, "\n")
 ```
-Since the p-value = 0.34451 > 0.05, we do not reject the null hypothesis that beta_1 = 1. There is not enough evidence to suggest that the slope of the linear model is 1.
+Since the p-value = `0.34451` > `0.05`, we do not reject the null hypothesis that `beta_1 = 1`. There is not enough evidence to suggest that the slope of the linear model is not `1`.
 
 #### (e)
-Assume that the condition in (d)(i) is true, i.e. beta_0 = 0. Then the linear model simplifies to y = beta_1 * x + e, where 'e' denotes error. We can now recalculate the confidence interval for beta_1.
+Assume that the condition in (d)(i) is true, i.e. `beta_0 = 0`. Then the linear model simplifies to `y = beta_1 * x + e`, where 'e' denotes error. We can now recalculate the confidence interval for beta_1.
 ```{r}
-# Recalculate the 95% confidence interval for beta_1
-SE <- sqrt(sum((y - beta_1 * x)^2) / (n-1)) / sqrt(Sxx)
-CI <- c(beta_1 - t * SE, beta_1 + t * SE)
-cat("95% confidence interval for beta_1 when beta_0 = 0 is: ", CI)
+# Initialize new regression model based on known b0
+lm_new <- lm(y ~ 0 + x)
+
+summary(lm_new)
 ```
+```{r}
+# Check the 95% confidence interval for beta_1 when beta_0 = 0 using confint()
+confint(lm_new, level = 0.95)
+```
+Now we retest the statement in d(ii) if the slope is 1
+```{r}
+# Conduct hypothesis testing for beta_1 = 1 given the new linear model with known b0
+b1_new = coef(lm_new)
+se_new = summary(lm_new)$coefficients["x", "Std. Error"]
+t_stat <- (b1_new - 1) / se_new
+p_value <- 2 * pt(-abs(t_stat), df = n-1)
+cat("The p-value for testing beta_1 = 1 is: ", p_value)
+```
+Since the p-value = `0.00104` < `0.05`, we reject the null hypothesis that beta_1 = 1. There is enough evidence to suggest that the slope of the linear model is not 1.
+
+#### (f)
+The results in (d) and (e) are different due to the assumption made in (e) that `beta_0 = 0`. This assumption simplifies the linear model by forcing the intercept value to be 0, and changes the degrees of freedom from `n-2` to `n-1`, which affects the t-statistic and p-value. The results in (d) are based on the original linear model, while the results in (e) are based on the simplified linear model with `beta_0 = 0`.
+
+### Q2.18
+```{r}
+# Create vectors for SBP and Age
+sbp <- c(164, 220, 133, 146, 162, 144, 166, 152, 140, 145, 135, 150, 170, 122, 120)
+age <- c(65, 63, 47, 54, 60, 44, 59, 64, 51, 49, 57, 56, 63, 41, 43)
+
+# Create a dataframe
+data <- data.frame(SBP = sbp, Age = age)
+
+# Display the dataframe
+print(data)
+```
+#### (a)
+```{r}
+# scatter plot sbp against age
+plot(data$Age, data$SBP, xlab = "Age", ylab = "SBP", main = "SBP vs Age")
+
+# Label the extreme point with a different colour
+expoint <- data[data$Age == 63 & data$SBP == 220,]
+points(expoint$Age, expoint$SBP, col = "red", pch = 19)
+```
+
+The plot shows an almost positive linear relationship between SBP and Age, indicating that as age increases, SBP also increases. There also seems to be a potential out-lier at age `63` with SBP `220` (marked in red).
+
+#### (b)
+Let 'x' denote the age and 'y' denote the SBP. Let the date assume the equation `y = beta_0 + beta_1 * x + e`, where 'e' denotes the error term.
+```{r}
+# Fit a linear model of SBP and Age
+model <- lm(SBP ~ Age, data = data)
+
+summary(model)
+```
+Obtain the fitted equation:
+```{r}
+# Get the coefficients of the linear model
+beta_0 <- coef(model)[1]
+beta_1 <- coef(model)[2]
+
+cat("The estimated coefficients are: beta_0 = ", beta_0, ", beta_1 = ", beta_1, "\n")
+cat("The fitted equation is: y_i = ", beta_0, " + ", beta_1, " * x_i")
+```
+#### (c)
+```{r}
+# Construct an ANOVA table for the linear model in (b)
+anova(model)
+```
+#### (d)
+```{r}
+# Calculate F ratio for testing the significance of the linear relationship
+f_value <- summary(model)$fstatistic[1]
+cat("The F ratio for testing the significance of the linear relationship is: ", f_value, "\n")
+```
+```{r}
+# Calculate the p-value for the F ratio
+p_value <- pf(f_value, df1 = 1, df2 = 13, lower.tail = FALSE)
+cat("The p-value for the F ratio is: ", p_value)
+```
+Assuming alpha = `0.05`, since the p-value = `0.002133` < `0.05`, we reject the null hypothesis that there is no linear relationship between SBP and Age. There is a significant linear relationship between SBP and Age.
+
+#### (e)
+Test the hypothesis that b1 = 0 at alpha = 0.05.
+```{r}
+# Define null hypothesis
+# Null hypothesis: beta_1 = 0
+
+# Conduct t-test for beta_1 = 0
+t_stat <- coef(model)[2] / summary(model)$coefficients["Age", "Std. Error"]
+p_value <- 2 * pt(-abs(t_stat), df = 13)
+cat("The p-value for t-testing beta_1 = 0 is: ", p_value)
+```
+Since the p-value = `0.002133` < `0.05`, we reject the null hypothesis that `beta_1 = 0`. There is a significant linear relationship between SBP and Age.
+
+We notice that the observation in (e) matches that (d).
 
 
 
