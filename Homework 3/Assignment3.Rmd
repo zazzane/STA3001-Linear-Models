@@ -1,12 +1,12 @@
 ---
-Title: Assignment 3
+Title: Homework 3 - R code
 Author: Zane Yee Sun
 ID: 124400004
 output:
   html_document:
     df_print: paged
 ---
-# Assignment 23 - Linear Models
+# Homework 3 - Linear Models
 ### Q4.1
 ```{r}
 # Define matrix X as a 2 by 10 matrix, first column of all 1s, second column of 1 to 10
