@@ -2,7 +2,9 @@
 Title: Assignment 3
 Author: Zane Yee Sun
 ID: 124400004
-output: word_document
+output:
+  html_document:
+    df_print: paged
 ---
 # Assignment 23 - Linear Models
 ### Q4.1
@@ -11,19 +13,17 @@ output: word_document
 X <- cbind(1, 1:10)
 X
 ```
-
 ```{r}
 # Compute and print X'X matrix
 t(X) %*% X
 ```
-
 ```{r}
 # Compute and print (X'X)^-1 matrix
 solve(t(X) %*% X)
 ```
-
 #### Variance of Beta_hat Matrix and Variance of b0_hat and b1_hat
 The written expression of the matrices can be found in the written submission.
+
 
 ### Q4.5
 After fitting the regression model, we have the following data:
@@ -41,7 +41,6 @@ After fitting the regression model, we have the following data:
 \]
 
 #### Part a: Estimate of V(β1)
-
 ```{r}
 # Given values
 s_squared <- 3
@@ -76,6 +75,8 @@ Corr_beta1_beta3
 V_beta1_minus_beta3_hat <- V_beta1_hat + V_beta3_hat - 2 * Cov_beta1_beta3
 V_beta1_minus_beta3_hat
 ```
+
+
 ### Q4.7
 #### Part a: Calculate Coefficient of determination from given table
 ```{r}
@@ -89,7 +90,6 @@ R_squared
 #### Part b: Hypothesis Testing
 H0: β1 = β2 = β3 = 0
 alpha = 0.05
-
 ```{r}
 # Set up F test
 p <- 3
@@ -133,7 +133,276 @@ cat("95% Confidence Interval for β2 (baths): [", CI_lower, ", ", CI_upper, "]\n
 ```
 Since the confidence interval contains 0, we cannot conclude that the coefficient for baths is not equal to 0. Fail to reject the null hypothesis. Can simplify by dropping "baths" from the model.
 
+
 ### Q4.10
+#### Part a: Write down the Estimated Equation
+```{r}
+# Define given matrices
+XtX <- matrix(c(15, 3626, 44428, 
+                3626, 1067614, 11419181,
+                44428, 11419181, 139063428), 
+              nrow = 3, ncol = 3, byrow = TRUE)
+
+Xty <- matrix(c(2259, 647107, 7096619), 
+              nrow = 3, ncol = 1)
+
+XtX_inv <- matrix(c(1.2463484, 2.1296642e-4, -4.1567125e-4, 
+                    2.1296642e-4, 7.7329030e-6, -7.0302518e-7, 
+                    -4.1567125e-4, -7.0302518e-7, 1.9771851e-7), 
+                  nrow = 3, ncol = 3, byrow = TRUE)
+
+beta_hat <- matrix(c(3.452613, 0.496005, 0.009191), 
+               nrow = 3, ncol = 1)
+
+yty <- 394107
+```
+```{r}
+# estimated equation
+cat("Estimated Equation: y_hat = ", beta_hat[1], " + ", beta_hat[2], "x1 + ", beta_hat[3], "x2\n")
+```
+#### Part b: T statistic hypothesis testing for each regression coefficient
+```{r}
+# Define values needed
+n <- 15
+p <- 2
+
+# Estimate sigma squared with MSE, hence solve for MSE
+RSS <- (yty - 2*(t(beta_hat) %*% Xty) + t(beta_hat) %*% XtX %*% beta_hat)
+s_squared <- as.numeric(RSS) / (n - p - 1) #MSE
+
+# Calculate standard errors of the regression coefficients
+se_beta <- sqrt(s_squared * diag(XtX_inv))
+
+# Ouput standard errors of the regression coefficients
+cat("Standard Error of beta0_hat:", se_beta[1], "\n")
+cat("Standard Error of beta1_hat:", se_beta[2], "\n")
+cat("Standard Error of beta2_hat:", se_beta[3], "\n")
+```
+#### Part c: T test for each regression coefficient 
+H0: βi = 0 for all i = 0, 1, 2
+```{r}
+# Compute t statistic for regression coefficients
+t_beta <- beta_hat / se_beta
+
+# Perform t test for regression coefficients
+p_values <- 2 * (1 - pt(abs(t_beta), n - p - 1))
 
 
+# Create a decision column to determine if we reject the null hypothesis at alpha = 0.05
+decision <- ifelse(p_values < 0.05, "Reject H0", "Fail to Reject H0")
 
+# Output the coefficient, standard error, t statistic, p-value and decision for each regression coefficient in a table
+t_test_table <- data.frame(Coefficient = c("beta0", "beta1", "beta2"),
+                            Estimate = c(beta_hat[1], beta_hat[2], beta_hat[3]),
+                            Standard_Error = se_beta,
+                            t_statistic = t_beta,
+                            P_value = p_values,
+                            Decision = decision)
+
+t_test_table
+```
+Based on the t test results, we can see that the p-value for β0 is greater than 0.05, so we do not reject the null hypothesis that β1 = 0. For the other coefficients, the p-values are less than 0.05, so there is sufficient evidence to reject the null hypothesis that β1 and β2 are equal to 0.
+
+
+### Q4.14
+```{r}
+# read the data 'bsemen.txt'
+bsemen <- read.table("bsemen.txt", header = TRUE)
+bsemen
+```
+#### Part a: Compute X'X, (X'X)^-1, and X'y
+```{r}
+# Define X
+X <- cbind(1, bsemen$X1, bsemen$X2, bsemen$X3)
+
+# Compute X'X
+XtX <- t(X) %*% X
+XtX
+```
+```{r}
+# Compute (X'X)^-1
+XtX_inv <- solve(XtX)
+XtX_inv
+```
+```{r}
+# Compute X'y
+Xty <- t(X) %*% bsemen$Y
+Xty
+```
+#### Part b: Plot y versus each predictor variable
+```{r}
+# y versus x1
+plot(bsemen$X1, bsemen$Y, xlab = "X1", ylab = "Y", main = "Y versus X1", col = "blue")
+```
+---
+From the plot of Y versus X1, we can see that there is a positive linear relationship between Y and X1. As X1 increases, Y also increases.
+```{r}
+# y versus x2
+plot(bsemen$X2, bsemen$Y, xlab = "X2", ylab = "Y", main = "Y versus X2", col = "red")
+```
+---
+From the plot of Y versus X2, there seems to be a slight negative relationship between Y and X2. As X2 increases, Y decreases.
+```{r}
+# y versus x3
+plot(bsemen$X3, bsemen$Y, xlab = "X3", ylab = "Y", main = "Y versus X3", col = "green")
+```
+---
+From the plot of Y versus X3, there does not seem to be any clear relationship between Y and X3. The points are scattered and do not show a clear pattern.
+
+#### Part c: Obtain least square estimates of β0, β1, β2, and β3, and state the fitted equation
+```{r}
+# Compute least square estimates of beta
+beta_hat <- XtX_inv %*% Xty
+beta_hat
+```
+```{r}
+# Write down the fitted equation
+cat("Fitted Equation: mu_hat = ", beta_hat[1], " + ", beta_hat[2], "X1 + ", beta_hat[3], "X2 + ", beta_hat[4], "X3\n")
+```
+#### Part d: Construct 90% Confidence Interval for:
+(i) the predicted mean value of y when X1 = 3, X2 = 8, X3 = 9
+(ii) the predicted individual value of y when X1 = 3, X2 = 8, X3 = 9
+```{r}
+# Given values
+X_new <- c(1, 3, 8, 9)
+alpha <- 0.1
+
+# fit the model with built in R functions
+fit <- lm(Y ~ X1 + X2 + X3, data = bsemen)
+
+# Construct 90% confidence interval for the predicted mean value of y
+predict_mean <- predict(fit, newdata = data.frame(X1 = 3, X2 = 8, X3 = 9), interval = "confidence", level = 1 - alpha)
+predict_mean
+```
+```{r}
+# Construct 90% confidence interval for the predicted individual value of y
+predict_ind <- predict(fit, newdata = data.frame(X1 = 3, X2 = 8, X3 = 9), interval = "prediction", level = 1 - alpha)
+predict_ind
+```
+#### Part e: Construct ANOVA table and test for significant linear relationship between y and the 3 predictor variables
+H0: β1 = β2 = β3 = 0
+```{r}
+# Construct ANOVA table
+anova(fit)
+```
+
+```{r}
+# Test for significant linear relationship between y and the 3 predictor variables
+summary(fit)
+```
+Since the p-value is less than 0.05, we reject the null hypothesis. This means that there is a significant linear relationship between y and the 3 predictor variables.
+
+
+### Q4.16 
+```{r}
+# define given matrices
+# X'X matrix
+XtX <- matrix(c(9, 136, 269, 260, 
+                136, 2114, 4176, 3583,
+                269, 4176, 8257, 7104,
+                260, 3583, 7104, 12276), 
+              nrow = 4, ncol = 4, byrow = TRUE)
+
+# X'y vector
+Xty <- c(45, 648, 1283, 1821)
+
+# (X'X)^-1 matrix
+XtX_inv <- matrix(c(9.610, 0.008, -0.279, -0.044,
+                    0.008, 0.509, -0.258, 0.001,
+                    -0.279, -0.258, 0.139, 0.001,
+                    -0.044, 0.001, 0.001, 0.0003),
+                  nrow = 4, ncol = 4, byrow = TRUE)
+
+# beta_hat vector
+beta_hat <- c(-1.163461, 0.135270, 0.019950, 0.121954)
+
+# y'y scalar
+yty <- 285
+
+# ouput the matrices
+XtX
+Xty
+XtX_inv
+beta_hat
+```
+#### Part a: Construct ANOVA table
+```{r}
+# Compute degrees of freedom
+p <- 4 # number of predictor variables including intercept
+n <- 9
+df_R <- p
+df_E <- n - p - 1
+df_T <- n - 1
+
+# Compute SSR, SSE, and SST
+SSE <- yty - t(beta_hat) %*% Xty
+SSR <- t(beta_hat) %*% Xty - ((1/n) * 45^2)
+SST <- SSR + SSE
+
+# Compute MSR, MSE, and F statistic
+MSR <- SSR / df_R
+MSE <- SSE / df_E
+F_stat <- MSR / MSE
+
+# Construct ANOVA table
+anova_table <- data.frame(Source = c("Regression", "Error", "Total"),
+                           DF = c(df_R, df_E, df_T),
+                           SS = c(SSR, SSE, SST),
+                           MS = c(MSR, MSE, NA),
+                           F = c(F_stat, NA, NA),
+                           P_value = c(pf(F_stat, df_R, df_E), NA, NA))
+
+anova_table
+```   
+#### Part b: State the computed regression equation and  standard errors of the regression coefficients
+```{r}
+# Write down the computed regression equation
+cat("Computed Regression Equation: y_hat = ", beta_hat[1], " + ", beta_hat[2], "x1 + ", beta_hat[3], "x2 + ", beta_hat[4], "x3\n")
+```
+```{r}
+s_squared <- MSE
+se_beta0_hat <- sqrt(s_squared * XtX_inv[1, 1])
+se_beta1_hat <- sqrt(s_squared * XtX_inv[2, 2])
+se_beta2_hat <- sqrt(s_squared * XtX_inv[3, 3])
+se_beta3_hat <- sqrt(s_squared * XtX_inv[4, 4])
+
+# Output standard errors of the regression coefficients
+cat("Standard Error of beta0_hat:", se_beta0_hat, "\n")
+cat("Standard Error of beta1_hat:", se_beta1_hat, "\n")
+cat("Standard Error of beta2_hat:", se_beta2_hat, "\n")
+cat("Standard Error of beta3_hat:", se_beta3_hat, "\n")
+```
+#### Part c: Compare the standard error of each regression coefficient to the estimated regression coefficient and use the t test to test if each regression coefficient is equal to 0
+H0: βi = 0 for all i = 0, 1, 2, 3
+```{r}
+# Compute t statistic for each regression coefficient
+t_beta0 <- beta_hat[1] / se_beta0_hat
+t_beta1 <- beta_hat[2] / se_beta1_hat
+t_beta2 <- beta_hat[3] / se_beta2_hat
+t_beta3 <- beta_hat[4] / se_beta3_hat
+
+# Perform t test for each regression coefficient
+p_value_beta0 <- 2 * (1 - pt(abs(t_beta0), df_E))
+p_value_beta1 <- 2 * (1 - pt(abs(t_beta1), df_E))
+p_value_beta2 <- 2 * (1 - pt(abs(t_beta2), df_E))
+p_value_beta3 <- 2 * (1 - pt(abs(t_beta3), df_E))
+
+# Create a decision column to determine if we reject the null hypothesis at alpha = 0.05
+decision <- c(ifelse(p_value_beta0 < 0.05, "Reject H0", "Fail to Reject H0"),
+              ifelse(p_value_beta1 < 0.05, "Reject H0", "Fail to Reject H0"),
+              ifelse(p_value_beta2 < 0.05, "Reject H0", "Fail to Reject H0"),
+              ifelse(p_value_beta3 < 0.05, "Reject H0", "Fail to Reject H0"))
+
+# Output the coefficient, standard error, t statistic, p-value and decision for each regression coefficient in a table
+t_test_table <- data.frame(Coefficient = c("beta0", "beta1", "beta2", "beta3"),
+                            Estimate = beta_hat,
+                            Standard_Error = c(se_beta0_hat, se_beta1_hat, se_beta2_hat, se_beta3_hat),
+                            t_statistic = c(t_beta0, t_beta1, t_beta2, t_beta3),
+                            P_value = c(p_value_beta0, p_value_beta1, p_value_beta2, p_value_beta3),
+                            Decision = decision)
+                            
+
+
+t_test_table
+```
+Based on the t test results, we can see that the p-value for β3 is less than 0.05, so we reject the null hypothesis that β3 = 0. For the other coefficients, the p-values are greater than 0.05, so there is insufficient evidence to reject the null hypothesis that β0, β1, and β2 are equal to 0.
