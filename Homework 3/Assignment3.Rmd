@@ -1,0 +1,139 @@
+---
+Title: Assignment 3
+Author: Zane Yee Sun
+ID: 124400004
+output: word_document
+---
+# Assignment 23 - Linear Models
+### Q4.1
+```{r}
+# Define matrix X as a 2 by 10 matrix, first column of all 1s, second column of 1 to 10
+X <- cbind(1, 1:10)
+X
+```
+
+```{r}
+# Compute and print X'X matrix
+t(X) %*% X
+```
+
+```{r}
+# Compute and print (X'X)^-1 matrix
+solve(t(X) %*% X)
+```
+
+#### Variance of Beta_hat Matrix and Variance of b0_hat and b1_hat
+The written expression of the matrices can be found in the written submission.
+
+### Q4.5
+After fitting the regression model, we have the following data:
+
+- Mean square error: \( s^2 = 3 \)
+- Inverse of \( X'X \):
+\[
+(X'X)^{-1} =
+\begin{bmatrix}
+0.5 & 0.3 & 0.2 & 0.6 \\
+0.3 & 6.0 & 0.5 & 0.4 \\
+0.2 & 0.5 & 0.2 & 0.7 \\
+0.6 & 0.4 & 0.7 & 3.0
+\end{bmatrix}
+\]
+
+#### Part a: Estimate of V(β1)
+
+```{r}
+# Given values
+s_squared <- 3
+XtX_inv <- matrix(c(0.5, 0.3, 0.2, 0.6,
+                     0.3, 6.0, 0.5, 0.4,
+                     0.2, 0.5, 0.2, 0.7,
+                     0.6, 0.4, 0.7, 3.0), 
+                   nrow = 4, byrow = TRUE)
+
+# Estimate of V(β1_hat)
+V_beta1_hat <- s_squared * XtX_inv[2, 2]
+V_beta1_hat
+```  
+#### Part b: Estimate of Cov(β1_hat, β3_hat)
+```{r}
+# Estimate of Cov(β1_hat, β3_hat)
+Cov_beta1_beta3 <- s_squared * XtX_inv[2, 4]
+Cov_beta1_beta3
+```
+#### Part c: Estimate of Corr(β1_hat, β3_hat)
+```{r}  
+# Estimate of V(β3_hat)
+V_beta3_hat <- s_squared * XtX_inv[4, 4]
+
+# Estimate of Corr(β1_hat, β3_hat) via pearson correlation coefficient
+Corr_beta1_beta3 <- Cov_beta1_beta3 / sqrt(V_beta1_hat * V_beta3_hat)
+Corr_beta1_beta3
+```
+#### Part d: Estimate of V(β1_hat - β3_hat)
+```{r}
+# Estimate of V(β1_hat - β3_hat)
+V_beta1_minus_beta3_hat <- V_beta1_hat + V_beta3_hat - 2 * Cov_beta1_beta3
+V_beta1_minus_beta3_hat
+```
+### Q4.7
+#### Part a: Calculate Coefficient of determination from given table
+```{r}
+ss_reg <- 504541
+ss_total <- 541119
+
+# Coefficient of determination
+R_squared <- ss_reg / ss_total
+R_squared
+```
+#### Part b: Hypothesis Testing
+H0: β1 = β2 = β3 = 0
+alpha = 0.05
+
+```{r}
+# Set up F test
+p <- 3
+n <- 28
+msr <- ss_reg / p
+mse <- (ss_total - ss_reg) / (n - p - 1)
+F_stat <- msr / mse
+
+# Perform F test
+p_value <- 1 - pf(F_stat, p, n - p - 1)
+
+# Print results
+cat("F statistic:", F_stat, "\n")
+cat("p-value:", p_value, "\n")
+```
+Since the p-value is less than 0.05, we reject the null hypothesis. This means that at least one of the coefficients is not equal to 0.
+
+#### Part c: 95% Confidence Interval for β1 (taxes)
+```{r}
+# Given values from table
+taxes_β1 <- 0.18966
+se_taxes_β1 <- 0.05623
+
+baths_β2 <- 81.87
+se_baths_β2 <- 47.82
+
+# Construct 95% confidence interval for β1
+t_value <- qt(0.975, n - p - 1)
+CI_lower <- taxes_β1 - t_value * se_taxes_β1
+CI_upper <- taxes_β1 + t_value * se_taxes_β1
+cat("95% Confidence Interval for β1 (taxes): [", CI_lower, ", ", CI_upper, "]\n")
+```
+Since the confidence interval does not contain 0, we can conclude that the coefficient for taxes is not equal to 0. Reject the null hypothesis. Cannot simplify by dropping "taxes" from the model.
+
+#### Part d: 95% Confidence Interval for β2 (baths)
+```{r}
+# Construct 95% confidence interval for β2
+CI_lower <- baths_β2 - t_value * se_baths_β2
+CI_upper <- baths_β2 + t_value * se_baths_β2
+cat("95% Confidence Interval for β2 (baths): [", CI_lower, ", ", CI_upper, "]\n")
+```
+Since the confidence interval contains 0, we cannot conclude that the coefficient for baths is not equal to 0. Fail to reject the null hypothesis. Can simplify by dropping "baths" from the model.
+
+### Q4.10
+
+
+
