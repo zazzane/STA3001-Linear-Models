@@ -1,0 +1,320 @@
+---
+Title: Homework 4 - R code
+Author: Zane Yee Sun
+ID: 124400004
+output:
+  html_document:
+    df_print: paged
+---
+# Homework 4 - Linear Models
+```{r}
+# Library Setup
+suppressWarnings(suppressMessages({
+  library(ggplot2)
+  library(dplyr)
+  library(car) # For checking model assumptions
+  library(MASS) # For transformations
+  library(broom) # For tidying model outputs
+}))
+```
+### Q6.16
+#### First few steps:
+- Fit the model
+- Check the model assumptions
+- Check for multicollinearity
+```{r}
+# Load the data
+data <- read.table("recovery", header = TRUE)
+
+head(data)
+```
+```{r}
+# Fit a linear regression model
+model1 <- lm(y ~ x1 + x2, data = data)
+summary(model1)
+```
+```{r}
+# Check for model violations
+par(mfrow = c(1, 2))
+plot(model1)
+```
+---
+We observe that the "Residuals vs Fitted" plot indicates some non-linear behaviour. This could suggest that the relationship between the predictors and the response might be better suited to a quadratic model. 
+
+The QQ Residual plot also indicates heavy right tailed residuals, this suggest that the data is right skewed. The data might not be normally distributed.
+
+The scale-location plot also shows some heteroscedasticity, which suggests that the variance of the residuals is not constant. This could be due to the non-linear relationship between the predictors and the response.
+
+The residuals vs leverage plot shows that there are no influential data points since no points lie outside of Cook's Distance. However, some points do still exhibit high leverage.
+```{r}
+# Check for multi-collinearity
+vif(model1)
+```
+We observe that the VIF of x1 and x2 are both less than 5, which indicates that there is signigificantly low multi-collinearity between the two predictors.
+
+#### Now we explore the usefulness of transformation on the response:
+```{r}
+# Log transformation of the response
+model2 <- lm(log(y) ~ x1 + x2, data = data)
+summary(model2)
+```
+```{r}
+# Compare models
+broom::glance(model1)
+```
+```{r}
+broom::glance(model2)
+```
+```{r}
+# Check residuals of the log-transformed model
+par(mfrow = c(1, 2))
+plot(model2)
+```
+---
+We can observe that after the log-transformation, the residuals vs fitted plot shows a more linear relationship. The QQ plot also shows that the residuals are more normally distributed - as can be seen from the less heavy right tail.
+
+The scale-location plot also shows that the variance of the residuals is more constant. This suggests that the log-transformation of the response variable has improved the model fit.
+
+The residuals vs leverage plot also shows that there are still no influential data points since no points lie outside of Cook's Distance. However, it seems like the points with high leverage before still have high leverage.
+
+#### Interpretation of Results:
+```{r}
+# Coefficients of model1
+coefficients(model1)
+
+# Coefficients of model2
+coefficients(model2)
+```
+```{r}
+# Predictions and confidence intervals
+predictions <- predict(model1, newdata = data, interval = "confidence")
+predictions_log <- predict(model2, newdata = data, interval = "confidence")
+
+# Add predictions to the original data
+data <- data %>%
+  mutate(predicted_recovery = predictions[, "fit"],
+         predicted_recovery_log = exp(predictions_log[, "fit"]))
+
+# Visualize the relationships
+ggplot(data, aes(x = x1, y = y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, col = "blue") +
+  labs(title = "Recovery Time vs Log Dose", x = "Log Dose", y = "Recovery Time")
+```
+---
+The scatterplots indicate a positive linear relationship between log Dose and Recovery Time. 
+
+```{r}
+# plot for recovery vs blood pressure
+ggplot(data, aes(x = x2, y = y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, col = "red") +
+  labs(title = "Recovery Time vs Blood Pressure", x = "Blood Pressure", y = "Recovery Time")
+```
+---
+The relationship between Blood Pressure and Recovery Time is less clear, but it seems exhibit a slightly negative linear behaviour.
+
+We can go one step further to observe the effect of the log transformation on the response variable:
+- compare the effect of log transformation on the response variable on the high leverage points
+```{r}
+# plot a log(recovery) vs log dose graph
+ggplot(data, aes(x = x1, y = log(y))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, col = "blue") +
+  labs(title = "Log Recovery Time vs Log Dose", x = "Log Dose", y = "Log Recovery Time")
+```
+---
+We see that as compared to the "Recovery Time vs Log Dose" plot, the "Log Recovery Time vs Log Dose" plot shows that our transformation has helped (to some extent) in reducing the high leverage of those points, thereby helping to reduce non-constant variance and non-linearity.
+
+### Q7.5
+```{r}
+# Load the data
+rain_data <- read.table("rainseeding", header = TRUE)
+
+rain_data
+```
+```{r}
+# All possible regression
+
+# Get all possible models
+results <- list()
+num_predictors <- ncol(rain_data) - 1  # Number of predictors
+
+for (i in 1:num_predictors) {
+  combn_names <- combn(names(rain_data)[-ncol(rain_data)], i, simplify = FALSE)  # Get combinations of predictors
+  for (combo in combn_names) {
+    metrics <- list()
+    formula_str <- paste("rain ~", paste(combo, collapse = " + "))
+    model <- lm(as.formula(formula_str), data = rain_data)
+    metrics$r_squared <- summary(model)$r.squared # Get R-squared
+    metrics$p_value <- broom::glance(model)$p.value # Get p-value
+    results[[formula_str]] <- metrics # Store metrics in results
+  }
+}
+```
+```{r}
+# Store results in a data frame
+results_df <- do.call(rbind, lapply(results, as.data.frame))
+results_df$formula <- rownames(results_df)
+results_df <- results_df[, c("formula", "r_squared", "p_value")]
+
+results_df
+```
+```{r}
+# Get the best model combination based on max p-value
+best_model <- results_df[which.min(results_df$p_value), ]
+
+best_model
+```
+```{r}
+# Perform backward elimination model selection
+# Full model
+model_full <- lm(rain ~ ., data = rain_data)
+AIC_full <- AIC(model_full)
+rsqr_full <- summary(model_full)$r.squared
+p_val_full <- broom::glance(model_full)$p.value
+
+cat("Full Model: AIC =", AIC_full, "R-squared =", rsqr_full, "p-value =", p_val_full, "\n")
+```
+```{r}
+# Backward elimination
+model_backward <- stepAIC(model_full, direction = "backward", scope = formula(model_full), trace = FALSE)
+
+AIC_backward <- AIC(model_backward)
+rsqr_backward <- summary(model_backward)$r.squared
+p_val_backward <- broom::glance(model_backward)$p.value
+
+cat("Backward Elimination: AIC =", AIC_backward, "R-squared =", rsqr_backward, "p-value =", p_val_backward, "\n")
+```
+```{r}
+model_backward$anova
+```
+```{r}
+# Stepwise selection
+model_stepwise <- stepAIC(model_full, direction = "both", trace = FALSE)
+
+AIC_stepwise <- AIC(model_stepwise)
+rsqr_stepwise <- summary(model_stepwise)$r.squared
+p_val_stepwise <- broom::glance(model_stepwise)$p.value
+
+cat("Stepwise Selection: AIC =", AIC_stepwise, "R-squared =", rsqr_stepwise, "p-value =", p_val_stepwise, "\n")
+```
+```{r}
+model_stepwise$anova
+```
+#### Assess the effectiveness of cloud seeding via full model, backward elimination and stepwise selection:
+
+##### First: Check for unusual cases (influential points)
+```{r}
+# Full model
+par(mfrow = c(1, 2))
+plot(model_full)
+
+# Cook's distance to identify influential points
+cooksd_full <- cooks.distance(model_full)
+influential_points_full <- which(cooksd_full > (4 / length(cooksd_full)))  # threshold set in lecture slides
+
+cat("Influential points:", influential_points_full, "\n")
+```
+We observe the Residuals vs Fitted plot shows some signs of nonlinearity, while the QQ plot shows some heavy tailed residuals. 
+
+The Scale-Location plot also shows some heteroscedasticity, which suggests that the variance of the residuals is not constant.
+
+The Residuals vs Leverage plot shows that there are some influential data points, as indicated by the points outside of Cook's Distance.
+```{r}
+# Backward elimination
+par(mfrow = c(1, 2))
+plot(model_backward)
+
+# Cook's distance to identify influential points
+cooksd_backward <- cooks.distance(model_backward)
+influential_points_backward <- which(cooksd_backward > (4 / length(cooksd_backward)))  # threshold set in lecture slides
+
+cat("Influential points:", influential_points_backward, "\n")
+```
+After running the backward elimination model, observations did not change much from the full model but we notice a more horizontal line in the Residuals vs Fitted plot. This suggests that the new model can capture the linearity of the data better. The QQ plot also shows that the residuals are more normally distributed, as indicated by the less heavy tails.
+
+The Scale-Location plot also shows that the variance of the residuals is more constant. This suggests that the backward elimination model has improved the model fit.
+
+The Residuals vs Leverage plot shows that there are still some influential data points, as indicated by the points outside of Cook's Distance.
+```{r}
+# Stepwise selection
+par(mfrow = c(1, 2))
+plot(model_stepwise)
+
+# Cook's distance to identify influential points
+cooksd_stepwise <- cooks.distance(model_stepwise)
+influential_points_stepwise <- which(cooksd_stepwise > (4 / length(cooksd_stepwise)))  # threshold set in lecture slides
+
+cat("Influential points:", influential_points_stepwise, "\n")
+```
+The observations here are similar to that of backward elimination.
+
+##### Second: Sensitivy Analysis (Compare models with and without influential points)
+```{r}
+# data without influential points (full model)
+rain_data_no_influential <- rain_data[-influential_points_full, ]
+
+# data without influential points (backward elimination)
+rain_data_no_influential_backward <- rain_data[-influential_points_backward, ]
+
+# data without influential points (stepwise selection)
+rain_data_no_influential_stepwise <- rain_data[-influential_points_stepwise, ]
+
+# Full model without influential points
+model_full_no_influential <- lm(rain ~ ., data = rain_data_no_influential)
+
+# Backward elimination without influential points
+model_backward_no_influential <- stepAIC(model_full_no_influential, direction = "backward", scope = formula(model_full_no_influential), trace = FALSE)
+
+# Stepwise selection without influential points
+model_stepwise_no_influential <- stepAIC(model_full_no_influential, direction = "both", trace = FALSE)
+
+# Compare models AIC, rsquared, and p-values
+AIC_full_no_influential <- AIC(model_full_no_influential)
+rsqr_full_no_influential <- summary(model_full_no_influential)$r.squared
+p_val_full_no_influential <- broom::glance(model_full_no_influential)$p.value
+
+AIC_backward_no_influential <- AIC(model_backward_no_influential)
+rsqr_backward_no_influential <- summary(model_backward_no_influential)$r.squared
+p_val_backward_no_influential <- broom::glance(model_backward_no_influential)$p.value
+
+AIC_stepwise_no_influential <- AIC(model_stepwise_no_influential)
+rsqr_stepwise_no_influential <- summary(model_stepwise_no_influential)$r.squared
+p_val_stepwise_no_influential <- broom::glance(model_stepwise_no_influential)$p.value
+
+# Create a dataframe to display results of sensitivity analysis with and without influential points
+sensitivity_results <- data.frame(
+  Model = c("Full Model", "Backward Elimination", "Stepwise Selection"),
+  # AICs
+  AIC = c(AIC_full, AIC_backward, AIC_stepwise),
+  AIC_no_influential = c(AIC_full_no_influential, AIC_backward_no_influential, AIC_stepwise_no_influential),
+  
+  # R-squared
+  R_squared = c(rsqr_full, rsqr_backward, rsqr_stepwise),
+  R_squared_no_influential = c(rsqr_full_no_influential, rsqr_backward_no_influential, rsqr_stepwise_no_influential),
+  
+  # p-values
+  p_value = c(p_val_full, p_val_backward, p_val_stepwise),
+  p_value_no_influential = c(p_val_full_no_influential, p_val_backward_no_influential, p_val_stepwise_no_influential)
+)
+
+sensitivity_results
+```
+##### Third: Review the sensitivity of the results based on the unsual cases
+
+1. Trend Across Models:
+- The AIC values (with & without influential points) are higher for the Full Model as compared to the Backward Elimination and Stepwise Selection models.
+- The R-squared values (with & without influential points) are higher for the Full Model as compared to the Backward Elimination and Stepwise Selection models.
+- The p-values (with & without influential points) are higher for the Full Model as compared to the Backward Elimination and Stepwise Selection models.
+- We also notice that the Full model considers points 1, 2, 7, 15 influential points while both Backward Elimination and Stepwise Selection only considers points 1, 15 as influential points.
+
+Overall, the Backward Elimination and Stepwise Selection models seem to perform better than the Full Model. This suggests that the Full model is overfitting the data. Using model selection procedures can help us identify the most important predictors and reduce the complexity of the model, thereby improving the model's prediction performance.
+
+2. Trend Across Sensitivity Analysis:
+- Removing influential points seems to have a positive effect on the AIC values, R-squared values, and p-values for all models.
+
+This suggests that the influential points were affecting the model's performance and removing them has helped improve the model's fit. It is important to identify and address influential points in the data to ensure that the model is not biased or overfitting the data.
+
+3. Conclusion:
+- Using model selection procedures, the results suggest that the best model for predicting rain seeding `Rain ~ Time` as indicated by iterating through all possible combinations of predictors, Backwards Elimination and Stepwise Selection. The Full Model seems to be overfitting the data and including unnecessary predictors, which can lead to poor prediction performance.
